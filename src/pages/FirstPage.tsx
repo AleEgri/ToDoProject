@@ -1,4 +1,4 @@
-import { SuccessSnackbar } from "../components/snackBars.tsx/SuccessSnackbar";
+import { SuccessSnackbar } from "../components/snackBars/SuccessSnackbar";
 import TodoList from "../components/toDoList/TodoList"
 import { TodoAppBar } from "../components/toolBar/Toolbar";
 

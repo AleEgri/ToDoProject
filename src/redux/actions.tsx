@@ -1,10 +1,14 @@
-import { ADD_TODO, TOGGLE_TODO, REMOVE_TODO, ADD_SUCCESS_SNACKBAR, REMOVE_SUCCESS_SNACKBAR } from './actionTypes';
+import { ADD_TODO, TOGGLE_TODO, REMOVE_TODO, ADD_SUCCESS_SNACKBAR, REMOVE_SUCCESS_SNACKBAR, EDIT_TODO } from './actionTypes';
 import { createAction } from 'typesafe-actions';
 
 export const addSuccessSnackbar = createAction(ADD_SUCCESS_SNACKBAR)
 
 export const addTodo = createAction(ADD_TODO, action => 
   (text: string) => action(text)
+);
+
+export const editTodo = createAction(EDIT_TODO, action =>
+  (id: number, newText: string) => action({id, newText})
 );
 
 export const toggleTodo = createAction(TOGGLE_TODO, action =>

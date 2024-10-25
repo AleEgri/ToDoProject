@@ -31,6 +31,14 @@ export const todosReducer = (state: ITodosState = initialState, action: Actions)
         ],
       };
 
+    case getType(todoActions.editTodo):
+      return {
+        ...state,
+        todos: state.todos.map(todo =>
+          todo.id === action.payload.id ? { ...todo, text: action.payload.newText } : todo
+        ),
+      };
+
     case getType(todoActions.toggleTodo):
       return {
         ...state,
