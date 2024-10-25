@@ -1,5 +1,7 @@
-import { ADD_TODO, TOGGLE_TODO, REMOVE_TODO } from './actionTypes';
-import { TodoActionTypes } from './actions';
+import { ActionType, getType } from 'typesafe-actions';
+import * as todoActions from './actions';
+
+type Actions = ActionType<typeof todoActions>;
 
 export interface Todo {
   id: number;
@@ -7,17 +9,20 @@ export interface Todo {
   completed: boolean;
 }
 
-export interface TodosState {
+export interface ITodosState {
   todos: Todo[];
 }
+export interface ISnackbarState {
+  open: boolean,
+};
 
-const initialState: TodosState = {
+const initialState: ITodosState = {
   todos: [],
 };
 
-export const todosReducer = (state = initialState, action: TodoActionTypes): TodosState => {
+export const todosReducer = (state: ITodosState = initialState, action: Actions): ITodosState => {
   switch (action.type) {
-    case ADD_TODO:
+    case getType(todoActions.addTodo):
       return {
         ...state,
         todos: [
@@ -26,7 +31,7 @@ export const todosReducer = (state = initialState, action: TodoActionTypes): Tod
         ],
       };
 
-    case TOGGLE_TODO:
+    case getType(todoActions.toggleTodo):
       return {
         ...state,
         todos: state.todos.map(todo =>
@@ -36,12 +41,28 @@ export const todosReducer = (state = initialState, action: TodoActionTypes): Tod
         ),
       };
 
-    case REMOVE_TODO:
+    case getType(todoActions.removeTodo):
       return {
         ...state,
         todos: state.todos.filter(todo => todo.id !== action.payload),
       };
 
+    default:
+      return state;
+  }
+};
+
+const initialSnackbarState: ISnackbarState = {
+  open: false,
+};
+
+
+export const snackbarReducer = (state: ISnackbarState = initialSnackbarState, action: Actions): ISnackbarState => {
+  switch (action.type) {
+    case getType(todoActions.addSuccessSnackbar):
+      return { ...state, open: true };
+    case getType(todoActions.removeSuccessSnackbar):
+      return { ...state, open: false };
     default:
       return state;
   }

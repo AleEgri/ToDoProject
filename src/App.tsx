@@ -1,10 +1,11 @@
 import React from 'react';
-import TodoList from './components/TodoList';
+import FirstPage from './pages/FirstPage';
+// import './index.css';
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <TodoList />
+      <FirstPage />
     </div>
   );
 };

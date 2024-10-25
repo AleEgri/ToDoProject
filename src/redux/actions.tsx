@@ -1,33 +1,18 @@
-import { ADD_TODO, TOGGLE_TODO, REMOVE_TODO } from './actionTypes';
+import { ADD_TODO, TOGGLE_TODO, REMOVE_TODO, ADD_SUCCESS_SNACKBAR, REMOVE_SUCCESS_SNACKBAR } from './actionTypes';
+import { createAction } from 'typesafe-actions';
 
-export interface AddTodoAction {
-  type: 'ADD_TODO';
-  payload: string;
-}
+export const addSuccessSnackbar = createAction(ADD_SUCCESS_SNACKBAR)
 
-export interface ToggleTodoAction {
-  type: typeof TOGGLE_TODO;
-  payload: number;
-}
+export const addTodo = createAction(ADD_TODO, action => 
+  (text: string) => action(text)
+);
 
-export interface RemoveTodoAction {
-  type: typeof REMOVE_TODO;
-  payload: number;
-}
+export const toggleTodo = createAction(TOGGLE_TODO, action =>
+  (id: number) => action(id)
+);
 
-export const addTodo = (text: string): AddTodoAction => ({
-  type: ADD_TODO,
-  payload: text,
-});
+export const removeTodo = createAction(REMOVE_TODO, action =>
+  (id: number) => action(id)
+);
 
-export const toggleTodo = (id: number): ToggleTodoAction => ({
-  type: TOGGLE_TODO,
-  payload: id,
-});
-
-export const removeTodo = (id: number): RemoveTodoAction => ({
-  type: REMOVE_TODO,
-  payload: id,
-});
-
-export type TodoActionTypes = AddTodoAction | ToggleTodoAction | RemoveTodoAction;
+export const removeSuccessSnackbar = createAction(REMOVE_SUCCESS_SNACKBAR)

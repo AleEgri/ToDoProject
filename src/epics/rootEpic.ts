@@ -1,6 +1,6 @@
 import { combineEpics } from 'redux-observable';
-import { addTodoEpic } from './todoEpics';
+import { addSuccessSnackbarEpic } from './todoEpics';
 
 export const rootEpic = combineEpics(
-  addTodoEpic,
+  addSuccessSnackbarEpic,
 );

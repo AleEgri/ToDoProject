@@ -1,18 +1,36 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware, combineReducers, Reducer } from 'redux';
 import { createEpicMiddleware } from 'redux-observable';
-import { todosReducer } from './reducer';
+import { ISnackbarState, ITodosState, snackbarReducer, todosReducer } from './reducer';
 import { rootEpic } from '../epics/rootEpic';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // Defaults to localStorage for web
 
-// Combine reducers if you have multiple
+type ComponentState = {
+  todos: ITodosState;
+  snackbar: ISnackbarState;
+}
+
+const persistConfig = {
+  key: 'root',  
+  storage,      
+};
+
 const rootReducer = combineReducers({
   todos: todosReducer,
+  snackbar: snackbarReducer,
 });
+
+const persistedReducer = persistReducer<Partial<ComponentState>>(persistConfig, rootReducer as Reducer<Partial<ComponentState>>);
 
 export type RootState = ReturnType<typeof rootReducer>;
 
 const epicMiddleware = createEpicMiddleware();
 
-export const store = createStore(rootReducer, applyMiddleware(epicMiddleware));
+export const store = createStore(
+  persistedReducer,
+  applyMiddleware(epicMiddleware)
+);
 
-// Run your root epic
 epicMiddleware.run(rootEpic);
+
+export const persistor = persistStore(store);

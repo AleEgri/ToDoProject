@@ -1,11 +1,10 @@
-import { ofType } from 'redux-observable';
-import { map } from 'rxjs/operators';
-import { ADD_TODO } from '../redux/actionTypes';
+import { Epic} from 'redux-observable';
+import { filter, map } from 'rxjs/operators';
+import { addSuccessSnackbar, toggleTodo } from '../redux/actions';
+import { isActionOf } from 'typesafe-actions';
 
-export const addTodoEpic = (action$: any) =>
+export const addSuccessSnackbarEpic: Epic<any> = (action$) =>
   action$.pipe(
-    ofType(ADD_TODO),
-    map(action => {  
-      return { type: 'TODO_ADDED_LOGGED' }; 
-    })
+    filter(isActionOf(toggleTodo)),
+    map(() => addSuccessSnackbar())
   );
