@@ -1,48 +1,61 @@
-import { ActionType, getType } from 'typesafe-actions';
-import * as todoActions from './actions';
+import { ActionType, getType } from "typesafe-actions";
+import * as todoActions from "./actions";
 
 type Actions = ActionType<typeof todoActions>;
 
 export interface Todo {
   id: number;
-  text: string;
+  assignedTo: string;
   completed: boolean;
+  tag: string;
+  text: string;
 }
 
 export interface ITodosState {
   todos: Todo[];
 }
 export interface ISnackbarState {
-  open: boolean,
-};
+  open: boolean;
+}
 
 const initialState: ITodosState = {
   todos: [],
 };
 
-export const todosReducer = (state: ITodosState = initialState, action: Actions): ITodosState => {
+export const todosReducer = (
+  state: ITodosState = initialState,
+  action: Actions
+): ITodosState => {
   switch (action.type) {
     case getType(todoActions.addTodo):
       return {
         ...state,
         todos: [
           ...state.todos,
-          { id: Date.now(), text: action.payload, completed: false },
+          {
+            id: Date.now(),
+            assignedTo: action.payload.assignedTo,
+            tag: action.payload.tag,
+            text: action.payload.text,
+            completed: false,
+          },
         ],
       };
 
     case getType(todoActions.editTodo):
       return {
         ...state,
-        todos: state.todos.map(todo =>
-          todo.id === action.payload.id ? { ...todo, text: action.payload.newText } : todo
+        todos: state.todos.map((todo) =>
+          todo.id === action.payload.id
+            ? { ...todo, text: action.payload.newText }
+            : todo
         ),
       };
 
     case getType(todoActions.toggleTodo):
       return {
         ...state,
-        todos: state.todos.map(todo =>
+        todos: state.todos.map((todo) =>
           todo.id === action.payload
             ? { ...todo, completed: !todo.completed }
             : todo
@@ -52,7 +65,7 @@ export const todosReducer = (state: ITodosState = initialState, action: Actions)
     case getType(todoActions.removeTodo):
       return {
         ...state,
-        todos: state.todos.filter(todo => todo.id !== action.payload),
+        todos: state.todos.filter((todo) => todo.id !== action.payload),
       };
 
     default:
@@ -64,8 +77,10 @@ const initialSnackbarState: ISnackbarState = {
   open: false,
 };
 
-
-export const snackbarReducer = (state: ISnackbarState = initialSnackbarState, action: Actions): ISnackbarState => {
+export const snackbarReducer = (
+  state: ISnackbarState = initialSnackbarState,
+  action: Actions
+): ISnackbarState => {
   switch (action.type) {
     case getType(todoActions.addSuccessSnackbar):
       return { ...state, open: true };

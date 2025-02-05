@@ -1,27 +1,51 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { addTodo, toggleTodo, removeTodo } from '../../redux/actions';
-import { Button, Card, CardActions, CardContent} from '@mui/material';
-import { TodoInput } from './todoItems/TodoInput';
-import { TodoItem } from './todoItems/ToDoItem';
+import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { TodoInput } from "./todoItems/TodoInput";
+import { TodoItem } from "./todoItems/ToDoItem";
+import { StyledTodoList } from "./styled/StyledToDoList";
+import { CompletedTodo } from "../completedToDos/CompletedToDo";
+import Divider from "@mui/material/Divider";
 
 const TodoList: React.FC = () => {
-  const [newTodo, setNewTodo] = useState('');
   const todos = useSelector((state: RootState) => state.todos.todos);
+
+  const activeTodos = todos.filter((todo) => !todo.completed);
+  const completedTodos = todos.filter((todo) => todo.completed);
 
   return (
     <>
-      <TodoInput newTodo={newTodo} setNewTodo={setNewTodo}/>
-      <ul>
-        {todos.map(todo => (
+      <StyledTodoList>
+        <TodoInput />
+
+        {activeTodos.map((todo) => (
           <TodoItem
+            key={todo.id}
             id={todo.id}
             text={todo.text}
             completed={todo.completed}
+            tag={todo.tag}
+            assignedTo={todo.assignedTo}
           />
         ))}
-      </ul>
+
+        {completedTodos.length > 0 && (
+          // TODO: Divider is not showing up
+          <Divider textAlign="center" sx={{ my: 2, fontSize: "14px", fontWeight: "bold", color: "black" }}>
+            Completed Tasks
+          </Divider>
+        )}
+
+        {completedTodos.map((todo) => (
+          <CompletedTodo
+            key={todo.id}
+            id={todo.id}
+            text={todo.text}
+            tag={todo.tag}
+            assignedTo={todo.assignedTo}
+          />
+        ))}
+      </StyledTodoList>
     </>
   );
 };

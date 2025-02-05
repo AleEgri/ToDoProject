@@ -3,7 +3,7 @@ import { createEpicMiddleware } from 'redux-observable';
 import { ISnackbarState, ITodosState, snackbarReducer, todosReducer } from './reducer';
 import { rootEpic } from '../epics/rootEpic';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // Defaults to localStorage for web
+import storage from 'redux-persist/lib/storage';
 
 type ComponentState = {
   todos: ITodosState;
@@ -20,6 +20,7 @@ const rootReducer = combineReducers({
   snackbar: snackbarReducer,
 });
 
+//TODO: Fix the type of persistedReducer
 const persistedReducer = persistReducer<Partial<ComponentState>>(persistConfig, rootReducer as Reducer<Partial<ComponentState>>);
 
 export type RootState = ReturnType<typeof rootReducer>;

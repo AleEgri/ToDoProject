@@ -1,18 +1,33 @@
-import { Button, Card, CardActions, CardContent } from "@mui/material";
+import {
+  Button,
+  Card,
+  Checkbox,
+  IconButton,
+  Box,
+  InputBase,
+} from "@mui/material";
 import { useDispatch } from "react-redux";
 import { editTodo, removeTodo, toggleTodo } from "../../../redux/actions";
 import { useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 
 type TodoItemProps = {
   id: number;
-  text: string;
+  assignedTo?: string;
   completed: boolean;
-}
+  tag?: string;
+  text: string;
+};
 
-export const TodoItem = ({id, text, completed}: TodoItemProps) => {
+export const TodoItem = (props: TodoItemProps) => {
+  const { id, assignedTo, text, tag, completed } = props;
+
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [newText, setNewText] = useState(text);
+  const [checked, setChecked] = useState(completed);
 
   const handleEdit = () => setIsEditing(true);
 
@@ -25,35 +40,82 @@ export const TodoItem = ({id, text, completed}: TodoItemProps) => {
     dispatch(editTodo(id, newText));
     setIsEditing(false);
   };
-  
+
+  const handleToggle = () => {
+    setChecked(!checked);
+    dispatch(toggleTodo(id));
+  };
+
+  const tagButtonColor =
+    tag === "Important"
+      ? "error"
+      : tag === "Morning"
+        ? "secondary"
+        : tag === "Home"
+          ? "success"
+          : "primary";
+
   return (
-    <Card key={id} sx={{ display: 'inline-block', mr: '10px' }}>
-      <CardContent>
-      {isEditing ? (
-        <input type="text" value={newText} onChange={handleEditChange} />
-      ) : (
-        <span
-        style={{ textDecoration: completed ? 'line-through' : 'none', cursor: 'pointer' }}
-        onClick={() => dispatch(toggleTodo(id))}
-        >
-        {text}
-        </span>
-      )} 
-      </CardContent>
-      <CardActions>
+    <Card
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        padding: 2,
+        margin: 1,
+      }}
+    >
+      <Checkbox
+        edge="start"
+        checked={checked}
+        onChange={handleToggle}
+        sx={{ marginRight: 2 }}
+      />
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        {/* TODO: Make this Box Component reusable */}
+        <Box sx={{ display: "flex", gap: 4, alignItems: "center" }}>
+          <Button
+            variant="contained"
+            color={tagButtonColor}
+            sx={{ borderRadius: 30, padding: "5px 30px" }}
+          >
+            {tag}
+          </Button>
+          <InputBase
+            disabled={!isEditing}
+            value={isEditing ? newText : text}
+            onChange={handleEditChange}
+          />
+          <span>
+            Assign to: <strong>{assignedTo}</strong>
+          </span>
+        </Box>
+      </Box>
+      <Box sx={{ marginLeft: 2, display: "flex", alignItems: "center" }}>
         {isEditing ? (
-          <Button variant="outlined" color='success' size='small' onClick={handleEditSubmit}>
-            Save
-          </Button>
-        ):(
-          <Button variant="outlined" color='success' size='small' onClick={handleEdit}>
-            Edit
-          </Button>
+          <IconButton aria-label="save" onClick={handleEditSubmit}>
+            <SaveIcon />
+          </IconButton>
+        ) : (
+          <IconButton aria-label="edit" onClick={handleEdit}>
+            <EditIcon />
+          </IconButton>
         )}
-        <Button variant="outlined" color='error' size='small' onClick={() => dispatch(removeTodo(id))}>
-          Delete 
-        </Button>
-      </CardActions>
+        <IconButton
+          edge="end"
+          aria-label="delete"
+          onClick={() => dispatch(removeTodo(id))}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Box>
     </Card>
   );
-}
+};
